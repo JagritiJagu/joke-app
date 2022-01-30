@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import axios from 'axios';
+// import { useState } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component{
+
+ state={joke:''};
+// const[joke, setJoke]=useState("");
+componentDidMount(){
+   this.fetchAdvice();
+}
+
+fetchJoke=()=>{
+    axios.get('https://icanhazdadjoke.com/slack')
+    .then((response)=>{
+        const{fallback}=response.data.attachments[0];
+        console.log(fallback);
+         this.setState({joke:fallback});
+    })
+    .catch((error)=>{
+         console.log(error);
+    });
+}
+    render(){
+        const {joke}= this.state;
+        return(
+            <div className='app'>
+                <div className='card'>
+                    <div className='heading '><h1> {joke} </h1></div>
+                    <button className='button' onClick={this.fetchJoke}>next joke</button>
+                </div>
+            </div>
+                
+        );
+    }
 }
 
 export default App;
